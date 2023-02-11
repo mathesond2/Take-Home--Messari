@@ -1,9 +1,11 @@
+import { useState } from 'react';
 import { SearchIcon } from '@chakra-ui/icons';
 import { Container, Flex, Input, InputGroup, InputLeftElement, Link } from '@chakra-ui/react';
 import { useAsset } from '@/util/assetContext';
 
 export default function Navbar() {
   const { asset, setAsset } = useAsset();
+  const [searchTerm, setSearchTerm] = useState('');
   return (
     <Container maxW="full" as="header" borderBottomWidth="1px" paddingX={10} paddingY={6}>
       <Flex justifyContent="space-between" alignItems="center">
@@ -17,8 +19,13 @@ export default function Navbar() {
           <Input
             type="text"
             placeholder="Search by asset name or symbol"
-            value={asset}
-            onChange={(e) => setAsset(e.target.value)}
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && searchTerm.length > 0 && searchTerm !== asset) {
+                setAsset(searchTerm);
+              }
+            }}
           />
         </InputGroup>
       </Flex>
