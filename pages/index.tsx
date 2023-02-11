@@ -1,6 +1,8 @@
 import Head from 'next/head';
+import { useAsset } from '@/util/assetContext';
 
 export default function Home() {
+  const { asset } = useAsset();
   return (
     <>
       <Head>
@@ -10,7 +12,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-        <h1>hi</h1>
+        <h1>hi {asset}</h1>
       </main>
     </>
   );
