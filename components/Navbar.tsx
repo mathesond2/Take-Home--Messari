@@ -11,7 +11,9 @@ export default function Navbar() {
           Asset Overview
         </Link>
         <InputGroup width={300}>
-          <InputLeftElement pointerEvents="none" children={<SearchIcon color="gray.300" />} />
+          <InputLeftElement pointerEvents="none">
+            <SearchIcon color="gray.300" />
+          </InputLeftElement>
           <Input type="text" placeholder="Search" value={search} onChange={(e) => setSearch(e.target.value)} />
         </InputGroup>
       </Flex>
