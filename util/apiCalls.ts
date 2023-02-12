@@ -33,12 +33,6 @@ const fetchV1AssetMetricsData = async (args: AssetMetricsParams) => {
   return data;
 };
 
-const fetchV2AssetsData = async (params: any) => {
-  const url = `v2/assets?${params}`;
-  const data = await callEndpoint(url);
-  return data;
-};
-
 //TODO: make this more generic
 const callEndpoint = async (path: string) => {
   const messariAPI = 'https://data.messari.io/api';
@@ -57,5 +51,4 @@ const callEndpoint = async (path: string) => {
 export const fetchFns = {
   timeSeries: fetchV1AssetTimeSeriesData,
   assetMetrics: fetchV1AssetMetricsData,
-  assetsData: fetchV2AssetsData,
 };
