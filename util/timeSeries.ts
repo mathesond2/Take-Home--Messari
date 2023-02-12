@@ -1,10 +1,4 @@
-type TimeSeriesParams = {
-  asset?: string;
-  metricID: string;
-  params: string;
-};
-
-export const createAssetTimeSeriesURL = (args: TimeSeriesParams) => {
+export const createAssetTimeSeriesURL = (args: { asset?: string; metricID: string; params: string }) => {
   const { metricID, params } = args;
   return `metrics/${metricID}/time-series?${params}`;
 };
