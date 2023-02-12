@@ -1,4 +1,4 @@
-export type FetchFnName = 'timeSeries' | 'assetMetrics' | 'assetsData';
+export type FetchFnName = 'timeSeries' | 'assetMetrics';
 
 export type FetchParams = TimeSeriesParams | AssetMetricsParams;
 
@@ -8,13 +8,17 @@ export type TimeSeriesParam = {
   interval: string;
 };
 
-export type TimeSeriesParams = {
+export interface TimeSeriesParams {
   asset?: string;
   metricID: string;
   params: TimeSeriesParam;
+}
+
+type ParsedTimeSeriesParams = Omit<TimeSeriesParams, 'params'> & {
+  params: string;
 };
 
-const fetchV1AssetTimeSeriesData = async (args: TimeSeriesParams) => {
+const fetchV1AssetTimeSeriesData = async (args: ParsedTimeSeriesParams) => {
   const { asset, metricID, params } = args;
   const url = `v1/assets/${asset}/metrics/${metricID}/time-series?${params}`;
   const data = await callEndpoint(url);
