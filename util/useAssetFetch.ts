@@ -1,4 +1,4 @@
-import { useEffect, useReducer } from 'react';
+import { useEffect, useReducer, useRef } from 'react';
 import { useAsset } from './AssetContext';
 
 type FetchAction = {
@@ -58,6 +58,7 @@ const fetchEndpoint = async (path: string) => {
 };
 
 export function useAssetFetch(path: string): FetchState {
+  const searchedAssetRef = useRef<string | null>(null);
   const { asset } = useAsset();
   const [fetchData, dispatchFetchData] = useReducer(fetchDataReducer, initialFetchData);
   const { data, loading, error } = fetchData;
@@ -71,14 +72,14 @@ export function useAssetFetch(path: string): FetchState {
           type: 'success',
           data,
         });
+        searchedAssetRef.current = asset;
       } catch (error) {
         dispatchFetchData({ type: 'error' });
         console.error(`error: ${error}`);
       }
     };
 
-    //TODO: consider using a ref to store the asset data
-    if (!data && !error && asset) {
+    if ((!data && !error && asset) || (!loading && asset && searchedAssetRef.current !== asset)) {
       fetchData();
     }
   }, [data, error, asset]);
