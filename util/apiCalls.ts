@@ -34,9 +34,17 @@ const fetchV2AssetsData = async (params: any) => {
   return data;
 };
 
-const callEndpoint = async (url: string) => {
+//TODO: make this more generic
+const callEndpoint = async (path: string) => {
   const messariAPI = 'https://data.messari.io/api';
-  const response = await fetch(`${messariAPI}/${url}`);
+  const headers = new Headers();
+  headers.append('x-messari-api-key', process.env.NEXT_PUBLIC_MESSARI_API_KEY!);
+
+  const req = new Request(`${messariAPI}/${path}`, {
+    method: 'GET',
+    headers,
+  });
+  const response = await fetch(req);
   const data = await response.json();
   return data;
 };
