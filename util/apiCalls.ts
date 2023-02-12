@@ -18,7 +18,6 @@ const fetchV1AssetTimeSeriesData = async (args: TimeSeriesParams) => {
   const { asset, metricID, params } = args;
   const url = `v1/assets/${asset}/metrics/${metricID}/time-series?${params}`;
   const data = await callEndpoint(url);
-  console.log(`data is: ${JSON.stringify(data)}`);
   return data;
 };
 
