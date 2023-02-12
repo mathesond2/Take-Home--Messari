@@ -11,14 +11,10 @@ export type TimeSeriesParam = {
 export interface TimeSeriesParams {
   asset?: string;
   metricID: string;
-  params: TimeSeriesParam;
+  params: string;
 }
 
-type ParsedTimeSeriesParams = Omit<TimeSeriesParams, 'params'> & {
-  params: string;
-};
-
-const fetchV1AssetTimeSeriesData = async (args: ParsedTimeSeriesParams) => {
+const fetchV1AssetTimeSeriesData = async (args: TimeSeriesParams) => {
   const { asset, metricID, params } = args;
   const url = `v1/assets/${asset}/metrics/${metricID}/time-series?${params}`;
   const data = await callEndpoint(url);
