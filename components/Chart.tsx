@@ -1,5 +1,7 @@
 import { useFetchData } from '@/util/hooks';
 import { Text } from '@chakra-ui/react';
+import ErrorText from './ErrorText';
+import Loader from './Loader';
 
 const getCurrentDate = () => {
   const date = new Date();
@@ -16,9 +18,14 @@ export default function Chart() {
     },
   });
   console.log('zzz', data, loading, error);
+
+  if (loading) return <Loader />;
+
+  if (error) return <ErrorText text={JSON.stringify(error)} />;
+
   return (
     <>
-      <Text>Chart</Text>
+      <Text>Data: {data && JSON.stringify(data)}</Text>
     </>
   );
 }
