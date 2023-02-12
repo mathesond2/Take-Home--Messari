@@ -56,17 +56,16 @@ const fetchEndpoint = async (path: string) => {
   return data;
 };
 
-export function useFetch(url: string): FetchState {
+export function useFetch(path: string): FetchState {
+  const { asset } = useAsset();
   const [fetchData, dispatchFetchData] = useReducer(fetchDataReducer, initialFetchData);
   const { data, loading, error } = fetchData;
-
-  console.log('url', url);
 
   useEffect(() => {
     const fetchData = async () => {
       dispatchFetchData({ type: 'loading' });
       try {
-        const data = await fetchEndpoint(url);
+        const data = await fetchEndpoint(`v1/assets/${asset}/${path}`);
         dispatchFetchData({
           type: 'success',
           data,
@@ -78,10 +77,10 @@ export function useFetch(url: string): FetchState {
     };
 
     //TODO: consider using a ref to store the asset data
-    if (!data && !error) {
+    if (!data && !error && asset) {
       fetchData();
     }
-  }, [data, error]);
+  }, [data, error, asset]);
 
   return { data, loading, error };
 }

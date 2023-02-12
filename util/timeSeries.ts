@@ -7,8 +7,8 @@ type TimeSeriesParams = {
 };
 
 export const createAssetTimeSeriesURL = (args: TimeSeriesParams) => {
-  const { asset, metricID, params } = args;
-  return `v1/assets/${asset}/metrics/${metricID}/time-series?${params}`;
+  const { metricID, params } = args;
+  return `metrics/${metricID}/time-series?${params}`;
 };
 
 // const createAssetMetricsUrl = async (args: {
