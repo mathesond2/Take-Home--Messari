@@ -1,4 +1,4 @@
-import { useFetch } from '@/util/useFetch';
+import { useAssetFetch } from '@/util/useAssetFetch';
 import { Text } from '@chakra-ui/react';
 import ErrorText from './ErrorText';
 import Loader from './Loader';
@@ -8,7 +8,7 @@ function parseMetricsParams(fields: string[]) {
 }
 
 export default function Metrics() {
-  // const { data, loading, error } = useFetch('assetMetrics', {
+  // const { data, loading, error } = useAssetFetch('assetMetrics', {
   //   params: parseMetricsParams(['market_data', 'marketcap', 'name', 'symbol']),
   // });
   // console.log('Metrics', data, loading, error);

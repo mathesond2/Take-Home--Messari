@@ -1,11 +1,11 @@
 import { createAssetTimeSeriesURL, getCurrentDate, parseTimeSeriesParamsAsString } from '@/util/timeSeries';
-import { useFetch } from '@/util/useFetch';
+import { useAssetFetch } from '@/util/useAssetFetch';
 import { Text } from '@chakra-ui/react';
 import ErrorText from './ErrorText';
 import Loader from './Loader';
 
 export default function Chart() {
-  const { data, loading, error } = useFetch(
+  const { data, loading, error } = useAssetFetch(
     createAssetTimeSeriesURL({
       metricID: 'price',
       params: parseTimeSeriesParamsAsString({

@@ -1,3 +1,4 @@
+import { parse } from 'path';
 import { useEffect, useReducer } from 'react';
 import { useAsset } from './AssetContext';
 
@@ -43,6 +44,7 @@ const fetchDataReducer = (state: FetchState, action: FetchAction): FetchState =>
 };
 
 const fetchEndpoint = async (path: string) => {
+  console.log('calling', path);
   const messariAPI = 'https://data.messari.io/api';
   const headers = new Headers();
   headers.append('x-messari-api-key', process.env.NEXT_PUBLIC_MESSARI_API_KEY!);
@@ -56,7 +58,7 @@ const fetchEndpoint = async (path: string) => {
   return data;
 };
 
-export function useFetch(path: string): FetchState {
+export function useAssetFetch(path: string): FetchState {
   const { asset } = useAsset();
   const [fetchData, dispatchFetchData] = useReducer(fetchDataReducer, initialFetchData);
   const { data, loading, error } = fetchData;
