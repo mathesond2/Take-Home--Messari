@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useAsset } from '@/util/AssetContext';
 import { SearchIcon } from '@chakra-ui/icons';
 import { Container, Flex, Input, InputGroup, InputLeftElement, Link } from '@chakra-ui/react';
-import { useAsset } from '@/util/assetContext';
+import { useState } from 'react';
 
 export default function Navbar() {
   const { asset, setAsset } = useAsset();

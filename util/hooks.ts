@@ -1,7 +1,7 @@
 import { useEffect, useReducer } from 'react';
 import { fetchFns } from './apiCalls';
 import type { FetchFnName, FetchParams, TimeSeriesParams } from './apiCalls';
-import { useAsset } from './assetContext';
+import { useAsset } from './AssetContext';
 
 type FetchAction = {
   readonly type: 'error' | 'loading' | 'success';

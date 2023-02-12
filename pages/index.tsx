@@ -1,8 +1,8 @@
-import Head from 'next/head';
 import Banner from '@/components/Banner';
 import Chart from '@/components/Chart';
 import Metrics from '@/components/Metrics';
 import { Box } from '@chakra-ui/react';
+import Head from 'next/head';
 
 export default function Home() {
   return (
