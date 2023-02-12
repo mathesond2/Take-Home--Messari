@@ -1,6 +1,6 @@
 import { useEffect, useReducer } from 'react';
-import { fetchFns } from './apiCalls';
-import type { FetchFnName, FetchParams, TimeSeriesParams, TimeSeriesParam } from './apiCalls';
+import { AssetMetricsParams, fetchFns } from './apiCalls';
+import type { TimeSeriesParams } from './apiCalls';
 import { useAsset } from './AssetContext';
 
 type FetchAction = {
@@ -43,30 +43,21 @@ const fetchDataReducer = (state: FetchState, action: FetchAction): FetchState =>
       throw new Error('Unhandled action type: ' + action.type);
   }
 };
-// TODO: implement 'FetchParams' type for 'params'
-export const useFetchData = (dataType: FetchFnName, args: TimeSeriesParams) => {
+
+export function useFetchData(dataType: 'timeSeries', args: TimeSeriesParams): FetchState;
+export function useFetchData(dataType: 'assetMetrics', args: AssetMetricsParams): FetchState;
+export function useFetchData(dataType: unknown, args: unknown): FetchState {
   const [assetData, dispatchAssetData] = useReducer(fetchDataReducer, initialFetchData);
   const { asset } = useAsset();
-
-  args.asset = asset;
+  (args as TimeSeriesParams | AssetMetricsParams).asset = asset;
 
   const { data, loading, error } = assetData;
-
-  const { params } = args;
-  const parsedParamString: string = Object.keys(params)
-    .map((key, i) => `${key}=${params[key as keyof TimeSeriesParam]}${i + 1 < Object.keys(params).length ? '&' : ''}`)
-    .join('');
-
-  const parsedArgs = {
-    ...args,
-    params: parsedParamString,
-  };
 
   useEffect(() => {
     const fetchData = async () => {
       dispatchAssetData({ type: 'loading' });
       try {
-        const data = await fetchFns[dataType](parsedArgs);
+        const data = await fetchFns[dataType as 'timeSeries' | 'assetMetrics'](args as any); //TODO: type this better
         dispatchAssetData({
           type: 'success',
           data,
@@ -84,4 +75,4 @@ export const useFetchData = (dataType: FetchFnName, args: TimeSeriesParams) => {
   }, [fetchFns, dataType, asset]);
 
   return { data, loading, error };
-};
+}
