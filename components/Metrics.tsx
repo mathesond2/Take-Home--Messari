@@ -19,7 +19,7 @@ export default function Metrics() {
 
   return (
     <>
-      <Text>Metrics</Text>
+      <Text>Metrics {JSON.stringify(data)}</Text>
     </>
   );
 }
