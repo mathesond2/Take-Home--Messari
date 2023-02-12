@@ -1,5 +1,7 @@
 import { useEffect, useReducer } from 'react';
-import { fetchV1AssetTimeSeriesData, fetchV1AssetMetricsData, fetchV2AssetsData } from './apiCalls';
+import { fetchFns } from './apiCalls';
+import type { FetchFnName, FetchParams, TimeSeriesParams } from './apiCalls';
+import { useAsset } from './assetContext';
 
 type FetchAction = {
   readonly type: 'error' | 'loading' | 'success';
@@ -41,42 +43,20 @@ const fetchDataReducer = (state: FetchState, action: FetchAction): FetchState =>
       throw new Error('Unhandled action type: ' + action.type);
   }
 };
-
-// export const useFetchV1AssetTimeSeriesData = (assetKey: string, metricID: any, params: any) => {
-//   const [assetData, dispatchAssetData] = useReducer(fetchDataReducer, initialFetchData);
-
-//   useEffect(() => {
-//     const fetchData = async () => {
-//       dispatchAssetData({ type: 'loading' });
-//       try {
-//         const data = await fetchV1AssetTimeSeriesData(assetKey, metricID, params);
-//         dispatchAssetData({
-//           type: 'success',
-//           data,
-//         });
-//       } catch (error) {
-//         dispatchAssetData({ type: 'error' });
-//         console.error(`error: ${error}`);
-//       }
-//     };
-//     if (!assetData) {
-//       fetchData();
-//     }
-//   }, [assetKey, metricID, params]);
-
-//   const { data, loading, error } = assetData;
-
-//   return { data, loading, error };
-// }
-
-export const useGenericFetchData = (fetchFn: Function, params: any) => {
+// TODO: implement 'FetchParams' type for 'params'
+export const useFetchData = (dataType: FetchFnName, params: TimeSeriesParams) => {
   const [assetData, dispatchAssetData] = useReducer(fetchDataReducer, initialFetchData);
+  const { asset } = useAsset();
+
+  params.asset = asset;
+
+  const { data, loading, error } = assetData;
 
   useEffect(() => {
     const fetchData = async () => {
       dispatchAssetData({ type: 'loading' });
       try {
-        const data = await fetchFn(params);
+        const data = await fetchFns[dataType](params);
         dispatchAssetData({
           type: 'success',
           data,
@@ -86,12 +66,12 @@ export const useGenericFetchData = (fetchFn: Function, params: any) => {
         console.error(`error: ${error}`);
       }
     };
-    if (!assetData) {
+
+    //TODO: consider using a ref to store the asset data
+    if (!data && !error && asset) {
       fetchData();
     }
-  }, [fetchFn, params]);
-
-  const { data, loading, error } = assetData;
+  }, [fetchFns, dataType, asset]);
 
   return { data, loading, error };
 };
