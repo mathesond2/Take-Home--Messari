@@ -1,6 +1,4 @@
 import { useEffect, useReducer } from 'react';
-import { AssetMetricsParams, fetchFns } from './apiCalls';
-import type { TimeSeriesParams } from './apiCalls';
 import { useAsset } from './AssetContext';
 
 type FetchAction = {
@@ -44,35 +42,46 @@ const fetchDataReducer = (state: FetchState, action: FetchAction): FetchState =>
   }
 };
 
-export function useFetchData(dataType: 'timeSeries', args: TimeSeriesParams): FetchState;
-export function useFetchData(dataType: 'assetMetrics', args: AssetMetricsParams): FetchState;
-export function useFetchData(dataType: unknown, args: unknown): FetchState {
-  const [assetData, dispatchAssetData] = useReducer(fetchDataReducer, initialFetchData);
-  const { asset } = useAsset();
-  (args as TimeSeriesParams | AssetMetricsParams).asset = asset;
+const fetchEndpoint = async (path: string) => {
+  const messariAPI = 'https://data.messari.io/api';
+  const headers = new Headers();
+  headers.append('x-messari-api-key', process.env.NEXT_PUBLIC_MESSARI_API_KEY!);
 
-  const { data, loading, error } = assetData;
+  const req = new Request(`${messariAPI}/${path}`, {
+    method: 'GET',
+    headers,
+  });
+  const response = await fetch(req);
+  const data = await response.json();
+  return data;
+};
+
+export function useFetch(url: string): FetchState {
+  const [fetchData, dispatchFetchData] = useReducer(fetchDataReducer, initialFetchData);
+  const { data, loading, error } = fetchData;
+
+  console.log('url', url);
 
   useEffect(() => {
     const fetchData = async () => {
-      dispatchAssetData({ type: 'loading' });
+      dispatchFetchData({ type: 'loading' });
       try {
-        const data = await fetchFns[dataType as 'timeSeries' | 'assetMetrics'](args as any); //TODO: type this better
-        dispatchAssetData({
+        const data = await fetchEndpoint(url);
+        dispatchFetchData({
           type: 'success',
           data,
         });
       } catch (error) {
-        dispatchAssetData({ type: 'error' });
+        dispatchFetchData({ type: 'error' });
         console.error(`error: ${error}`);
       }
     };
 
     //TODO: consider using a ref to store the asset data
-    if (!data && !error && asset) {
+    if (!data && !error) {
       fetchData();
     }
-  }, [fetchFns, dataType, asset]);
+  }, [data, error]);
 
   return { data, loading, error };
 }
