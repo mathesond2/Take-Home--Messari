@@ -1,6 +1,6 @@
 import { useEffect, useReducer } from 'react';
 import { fetchFns } from './apiCalls';
-import type { FetchFnName, FetchParams, TimeSeriesParams } from './apiCalls';
+import type { FetchFnName, FetchParams, TimeSeriesParams, TimeSeriesParam } from './apiCalls';
 import { useAsset } from './AssetContext';
 
 type FetchAction = {
@@ -44,19 +44,29 @@ const fetchDataReducer = (state: FetchState, action: FetchAction): FetchState =>
   }
 };
 // TODO: implement 'FetchParams' type for 'params'
-export const useFetchData = (dataType: FetchFnName, params: TimeSeriesParams) => {
+export const useFetchData = (dataType: FetchFnName, args: TimeSeriesParams) => {
   const [assetData, dispatchAssetData] = useReducer(fetchDataReducer, initialFetchData);
   const { asset } = useAsset();
 
-  params.asset = asset;
+  args.asset = asset;
 
   const { data, loading, error } = assetData;
+
+  const { params } = args;
+  const parsedParamString: string = Object.keys(params)
+    .map((key, i) => `${key}=${params[key as keyof TimeSeriesParam]}${i + 1 < Object.keys(params).length ? '&' : ''}`)
+    .join('');
+
+  const parsedArgs = {
+    ...args,
+    params: parsedParamString,
+  };
 
   useEffect(() => {
     const fetchData = async () => {
       dispatchAssetData({ type: 'loading' });
       try {
-        const data = await fetchFns[dataType](params);
+        const data = await fetchFns[dataType](parsedArgs);
         dispatchAssetData({
           type: 'success',
           data,

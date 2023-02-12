@@ -2,10 +2,16 @@ export type FetchFnName = 'timeSeries' | 'assetMetrics' | 'assetsData';
 
 export type FetchParams = TimeSeriesParams | AssetMetricsParams;
 
+export type TimeSeriesParam = {
+  start: string;
+  end: string;
+  interval: string;
+};
+
 export type TimeSeriesParams = {
   asset?: string;
   metricID: string;
-  params: string;
+  params: TimeSeriesParam;
 };
 
 const fetchV1AssetTimeSeriesData = async (args: TimeSeriesParams) => {
