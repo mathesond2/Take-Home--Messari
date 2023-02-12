@@ -1,4 +1,3 @@
-import { parse } from 'path';
 import { useEffect, useReducer } from 'react';
 import { useAsset } from './AssetContext';
 
