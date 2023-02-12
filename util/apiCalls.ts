@@ -1,7 +1,3 @@
-export type FetchFnName = 'timeSeries' | 'assetMetrics';
-
-export type FetchParams = TimeSeriesParams | AssetMetricsParams;
-
 export type TimeSeriesParam = {
   start: string;
   end: string;
@@ -21,7 +17,7 @@ const fetchV1AssetTimeSeriesData = async (args: TimeSeriesParams) => {
   return data;
 };
 
-type AssetMetricsParams = {
+export type AssetMetricsParams = {
   asset?: string;
   params: string;
 };

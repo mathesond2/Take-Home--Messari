@@ -24,7 +24,7 @@ export default function Chart() {
       interval: '1w',
     }),
   });
-  console.log('zzz', data, loading, error);
+  console.log('Chart', data, loading, error);
 
   if (loading) return <Loader />;
 
