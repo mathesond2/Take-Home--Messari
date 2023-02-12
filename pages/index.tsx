@@ -1,12 +1,10 @@
 import Head from 'next/head';
-import { useAsset } from '@/util/assetContext';
 import Banner from '@/components/Banner';
 import Chart from '@/components/Chart';
 import Metrics from '@/components/Metrics';
 import { Box } from '@chakra-ui/react';
 
 export default function Home() {
-  const { asset } = useAsset();
   return (
     <>
       <Head>
@@ -16,7 +14,6 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-        <h1>hi {asset}</h1>
         <Banner />
         <Box display="flex" flexDir="row" mt={10}>
           <Chart />
