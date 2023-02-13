@@ -43,7 +43,7 @@ const fetchDataReducer = (state: FetchState, action: FetchAction): FetchState =>
   }
 };
 
-const fetchEndpoint = async (path: string) => {
+const fetchMessariEndpoint = async (path: string) => {
   const messariAPI = 'https://data.messari.io/api';
   const headers = new Headers();
   headers.append('x-messari-api-key', process.env.NEXT_PUBLIC_MESSARI_API_KEY!);
@@ -67,7 +67,7 @@ export function useAssetFetch(path: string): FetchState {
     const fetchData = async () => {
       dispatchFetchData({ type: 'loading' });
       try {
-        const res = await fetchEndpoint(`v1/assets/${asset}/${path}`);
+        const res = await fetchMessariEndpoint(`v1/assets/${asset}/${path}`);
 
         if (res.data) {
           dispatchFetchData({
