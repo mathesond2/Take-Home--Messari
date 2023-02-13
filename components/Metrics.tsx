@@ -1,7 +1,6 @@
 import { parseMetricsData } from '@/util/metrics';
 import { FetchState } from '@/util/useAssetFetch';
-import { Box, Flex, List, ListItem, Text } from '@chakra-ui/react';
-import ErrorText from './ErrorText';
+import { Box, Center, Flex, List, ListItem, Text } from '@chakra-ui/react';
 import Loader from './Loader';
 
 type MetricData = { [key: string]: string | number | object };
@@ -35,11 +34,16 @@ function DataList({ data, children }: { data: MetricData; children: React.ReactN
 
 export default function Metrics({ metricsData }: { metricsData: FetchState }) {
   const { loading, error, data } = metricsData || {};
-  const { market_data, marketcap } = data?.data || {};
+  const { market_data, marketcap } = data || {};
 
   if (loading) return <Loader />;
 
-  if (error) return <ErrorText text={JSON.stringify(error)} />;
+  if (error)
+    return (
+      <Center>
+        <Text>Metric data unavailable</Text>
+      </Center>
+    );
 
   return (
     <>

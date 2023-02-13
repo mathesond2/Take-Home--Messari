@@ -5,12 +5,10 @@ import { useAssetFetch } from '@/util/useAssetFetch';
 import { Box } from '@chakra-ui/react';
 
 type MetricsData = {
-  data: {
-    name: string;
-    symbol: string;
-    market_data: {
-      price_usd: number;
-    };
+  name: string;
+  symbol: string;
+  market_data: {
+    price_usd: number;
   };
 };
 
@@ -25,7 +23,8 @@ export default function Home() {
     error: any;
   } = useAssetFetch(`metrics${parseMetricsParams(['market_data', 'marketcap', 'name', 'symbol'])}`);
 
-  const { name, symbol, market_data } = metricsData?.data?.data || {
+  const { error, data } = metricsData;
+  const { name, symbol, market_data } = data || {
     name: '',
     symbol: '',
     market_data: {},
@@ -33,7 +32,7 @@ export default function Home() {
 
   return (
     <main>
-      <Banner name={name} symbol={symbol} price={market_data.price_usd} />
+      {!error && <Banner name={name} symbol={symbol} price={market_data.price_usd} />}
       <Box display="flex" flexDir="column" mt={10}>
         <ChartContainer />
         <Metrics metricsData={metricsData} />

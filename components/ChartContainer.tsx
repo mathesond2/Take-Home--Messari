@@ -37,7 +37,7 @@ export default function ChartContainer() {
   );
 
   const parsedChartData = useMemo(() => {
-    const values = data?.data?.values;
+    const values = data?.values;
     if (values) {
       return parseChartData(values);
     }
@@ -62,7 +62,7 @@ export default function ChartContainer() {
 
   return (
     <CenteredContent>
-      {parsedChartData.length ? <Chart data={parsedChartData} /> : <Text>Search for asset data</Text>}
+      {data && parsedChartData.length ? <Chart data={parsedChartData} /> : <Text>Search for asset data</Text>}
     </CenteredContent>
   );
 }
