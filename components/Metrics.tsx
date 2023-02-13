@@ -2,19 +2,30 @@ import { FetchState } from '@/util/useAssetFetch';
 import { Box, Flex, ListItem, Text, List } from '@chakra-ui/react';
 import ErrorText from './ErrorText';
 import Loader from './Loader';
-import { parseMarketCapKeys } from '@/util/metrics';
+import { parseMetricsData } from '@/util/metrics';
+
+function parseMetrics(data: any) {
+  return Object.keys(data)
+    .filter((key) => typeof data[key] !== 'object')
+    .map((key) => parseMetricsData(key, data[key]));
+}
 
 function DataList({ data, children }: { data: any; children: React.ReactNode }) {
+  const parsedMetrics = parseMetrics(data);
   return (
     <Box mb={8}>
       {children}
       <List>
-        {Object.keys(data).map((key) => (
-          <ListItem key={key} display="flex" justifyContent="space-between">
-            <span>{parseMarketCapKeys(key)}</span>
-            <span>{JSON.stringify(data[key])}</span>
-          </ListItem>
-        ))}
+        {parsedMetrics.map((metric) => {
+          const key = Object.keys(metric)[0];
+          const value = Object.values(metric)[0];
+          return (
+            <ListItem key={key} display="flex" justifyContent="space-between">
+              <span>{key}</span>
+              <span>{value}</span>
+            </ListItem>
+          );
+        })}
       </List>
     </Box>
   );
