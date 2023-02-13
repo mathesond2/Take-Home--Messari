@@ -4,13 +4,15 @@ import ErrorText from './ErrorText';
 import Loader from './Loader';
 import { parseMetricsData } from '@/util/metrics';
 
-function parseMetrics(data: any) {
+type MetricData = { [key: string]: string | number | object };
+
+function parseMetrics(data: MetricData) {
   return Object.keys(data)
     .filter((key) => typeof data[key] !== 'object')
-    .map((key) => parseMetricsData(key, data[key]));
+    .map((key) => parseMetricsData(key, data[key] as string | number));
 }
 
-function DataList({ data, children }: { data: any; children: React.ReactNode }) {
+function DataList({ data, children }: { data: MetricData; children: React.ReactNode }) {
   const parsedMetrics = parseMetrics(data);
   return (
     <Box mb={8}>
@@ -38,8 +40,6 @@ export default function Metrics({ metricsData }: { metricsData: FetchState }) {
   if (loading) return <Loader />;
 
   if (error) return <ErrorText text={JSON.stringify(error)} />;
-
-  console.log('metrics data', market_data, marketcap);
 
   return (
     <>
