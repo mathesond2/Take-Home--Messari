@@ -34,8 +34,8 @@ export default function Home() {
   return (
     <main>
       <Banner name={name} symbol={symbol} price={market_data.price_usd} />
-      <Box display="flex" flexDir="row" mt={10}>
-        {/* <Chart /> */}
+      <Box display="flex" flexDir="column" mt={10}>
+        <Chart />
         <Metrics metricsData={metricsData} />
       </Box>
     </main>
