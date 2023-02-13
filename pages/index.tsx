@@ -24,15 +24,17 @@ export default function Home() {
   } = useAssetFetch(`metrics${parseMetricsParams(['market_data', 'marketcap', 'name', 'symbol'])}`);
 
   const { error, data } = metricsData;
-  const { name, symbol, market_data } = data || {
+  const { name, symbol, market_data } = (!error && data) || {
     name: '',
     symbol: '',
-    market_data: {},
+    market_data: {
+      price_usd: 0,
+    },
   };
 
   return (
     <main>
-      {!error && <Banner name={name} symbol={symbol} price={market_data.price_usd} />}
+      <Banner name={name} symbol={symbol} price={market_data.price_usd} />
       <Box display="flex" flexDir="column" mt={10}>
         <ChartContainer />
         <Metrics metricsData={metricsData} />
