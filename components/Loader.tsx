@@ -1,4 +1,4 @@
-import { Container, CircularProgress } from '@chakra-ui/react';
+import { CircularProgress, Container } from '@chakra-ui/react';
 
 export default function Loader() {
   return (

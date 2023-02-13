@@ -1,7 +1,7 @@
-import { useAssetFetch } from '@/util/useAssetFetch';
 import Banner from '@/components/Banner';
 import Chart from '@/components/Chart';
 import Metrics from '@/components/Metrics';
+import { useAssetFetch } from '@/util/useAssetFetch';
 import { Box } from '@chakra-ui/react';
 
 type MetricsData = {
