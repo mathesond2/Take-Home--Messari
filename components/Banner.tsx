@@ -1,5 +1,5 @@
-import { Box, Heading, Tag, Text } from '@chakra-ui/react';
 import { formatUSD } from '@/util/metrics';
+import { Box, Heading, Tag, Text } from '@chakra-ui/react';
 
 export default function Banner({ name, symbol, price }: { name: string; symbol: string; price: number }) {
   return (

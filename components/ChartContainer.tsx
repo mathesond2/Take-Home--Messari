@@ -44,19 +44,21 @@ export default function ChartContainer() {
     return [];
   }, [data]);
 
-  if (loading)
+  if (loading) {
     return (
       <CenteredContent>
         <Loader />
       </CenteredContent>
     );
+  }
 
-  if (error)
+  if (error) {
     return (
       <CenteredContent>
         <Text>Data not found for asset. Please try again using a valid name or symbol.</Text>
       </CenteredContent>
     );
+  }
 
   return (
     <CenteredContent>

@@ -1,8 +1,8 @@
+import { parseMetricsData } from '@/util/metrics';
 import { FetchState } from '@/util/useAssetFetch';
-import { Box, Flex, ListItem, Text, List } from '@chakra-ui/react';
+import { Box, Flex, List, ListItem, Text } from '@chakra-ui/react';
 import ErrorText from './ErrorText';
 import Loader from './Loader';
-import { parseMetricsData } from '@/util/metrics';
 
 type MetricData = { [key: string]: string | number | object };
 
