@@ -27,11 +27,6 @@ function createToolTipElement() {
   return toolTip;
 }
 
-export type ChartData = {
-  time: string;
-  value: number;
-};
-
 const chartOptions = {
   crosshair: {
     vertLine: {
@@ -60,6 +55,11 @@ const chartOptions = {
     mouseWheel: false,
     pinch: false,
   },
+};
+
+export type ChartData = {
+  time: string;
+  value: number;
 };
 
 export function Chart({ data }: { data: ChartData[] }) {

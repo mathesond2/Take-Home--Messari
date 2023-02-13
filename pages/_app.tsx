@@ -1,11 +1,11 @@
 import '@/styles/globals.css';
+import { AssetProvider } from '@/util/AssetContext';
 import { theme } from '@/util/theme';
 import { ChakraProvider } from '@chakra-ui/react';
 import type { AppProps } from 'next/app';
-import Layout from '../components/Layout';
 import Head from 'next/head';
 import HeadContent from '../components/HeadContent';
-import { AssetProvider } from '@/util/AssetContext';
+import Layout from '../components/Layout';
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
