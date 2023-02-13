@@ -1,6 +1,7 @@
 import Banner from '@/components/Banner';
 import ChartContainer from '@/components/ChartContainer';
 import Metrics from '@/components/Metrics';
+import { parseMetricsParams } from '@/util/metrics';
 import { useAssetFetch } from '@/util/useAssetFetch';
 import { Box } from '@chakra-ui/react';
 
@@ -11,10 +12,6 @@ type MetricsData = {
     price_usd: number;
   };
 };
-
-function parseMetricsParams(fields: string[]) {
-  return `?fields=${fields.join(',')}`;
-}
 
 export default function Home() {
   const metricsData: {

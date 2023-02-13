@@ -1,3 +1,7 @@
+export function parseMetricsParams(fields: string[]) {
+  return `?fields=${fields.join(',')}`;
+}
+
 export function roundToTwoDecimals(num: number) {
   return Math.round(num * 100) / 100;
 }
