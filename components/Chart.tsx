@@ -1,5 +1,5 @@
 import { Box } from '@chakra-ui/react';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useMemo } from 'react';
 import { createChart, ColorType, MouseEventParams } from 'lightweight-charts';
 import { createAssetTimeSeriesURL, getCurrentDate, parseTimeSeriesParamsAsString } from '@/util/timeSeries';
 import { useAssetFetch } from '@/util/useAssetFetch';
@@ -7,7 +7,6 @@ import ErrorText from './ErrorText';
 import Loader from './Loader';
 
 function createToolTipElement() {
-  // Create and style the tooltip html element
   const toolTip = document.createElement('div');
   toolTip.style.width = '96px';
   toolTip.style.height = '80px';
@@ -31,8 +30,12 @@ function createToolTipElement() {
 }
 
 type ChartData = {
-  time: string;
+  time: number;
+  open: number;
+  high: number;
+  low: number;
   value: number;
+  volume: number;
 };
 
 export const ChartComponent = ({ data }: { data: ChartData[] }) => {
@@ -104,7 +107,6 @@ export const ChartComponent = ({ data }: { data: ChartData[] }) => {
         `;
 
         const coordinate = newSeries.priceToCoordinate(price);
-        console.log('coordinate', coordinate);
         let shiftedCoordinate = point.x - 50;
         if (coordinate === null) {
           return;
@@ -124,8 +126,6 @@ export const ChartComponent = ({ data }: { data: ChartData[] }) => {
                   coordinate - toolTipMargin,
                 ),
               );
-
-        console.log('coordinateY', coordinateY);
 
         toolTip.style.left = `${shiftedCoordinate}px`;
         toolTip.style.top = `${coordinateY}px`;
@@ -155,6 +155,17 @@ const initialData = [
   { time: '2018-12-31', value: 22.67 },
 ];
 
+function parseChartData(data: number[][]): ChartData[] {
+  return data.map((item) => ({
+    time: item[0],
+    open: item[1],
+    high: item[2],
+    low: item[3],
+    value: item[4], // 'close' metric
+    volume: item[5],
+  }));
+}
+
 export default function Chart() {
   const { data, loading, error } = useAssetFetch(
     createAssetTimeSeriesURL({
@@ -163,19 +174,30 @@ export default function Chart() {
         start: '1970-01-01',
         end: getCurrentDate(),
         interval: '1w',
+        order: 'ascending',
       }),
     }),
   );
 
   console.log('data', data);
 
+  const parsedChartData = useMemo(() => {
+    const values = data?.data?.values;
+    if (values) {
+      return parseChartData(values);
+    }
+    return [];
+  }, [data]);
+
+  console.log('parsedChartData', parsedChartData);
+
   if (loading) return <Loader />;
 
   if (error) return <ErrorText text={JSON.stringify(error)} />;
 
   return (
-    <>
-      <ChartComponent data={initialData} />
-    </>
+    <Box mb={8}>
+      <ChartComponent data={parsedChartData} />
+    </Box>
   );
 }
