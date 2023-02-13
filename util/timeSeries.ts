@@ -7,6 +7,7 @@ type TimeSeriesParam = {
   start: string;
   end: string;
   interval: string;
+  order: 'ascending' | 'descending';
 };
 
 export function parseTimeSeriesParamsAsString(params: TimeSeriesParam) {
