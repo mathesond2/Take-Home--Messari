@@ -1,12 +1,11 @@
 import { roundToTwoDecimals } from '@/util/metrics';
 import { createAssetTimeSeriesURL, getCurrentDate, parseTimeSeriesParamsAsString } from '@/util/timeSeries';
 import { useAssetFetch } from '@/util/useAssetFetch';
-import { Box } from '@chakra-ui/react';
+import { Box, Center, Text } from '@chakra-ui/react';
 import { useMemo } from 'react';
-import ErrorText from './ErrorText';
-import Loader from './Loader';
-import { Chart } from './Chart';
 import type { ChartData } from './Chart';
+import { Chart, CHART_HEIGHT } from './Chart';
+import Loader from './Loader';
 
 function parseChartData(data: number[][]): ChartData[] {
   return data.map((item) => {
@@ -15,6 +14,14 @@ function parseChartData(data: number[][]): ChartData[] {
     return { time, value };
   });
 }
+
+const CenteredContent = ({ children }: { children: React.ReactNode }) => (
+  <Box mb={8} h={`${CHART_HEIGHT}px`}>
+    <Center h="100%" w="100%">
+      {children}
+    </Center>
+  </Box>
+);
 
 export default function ChartContainer() {
   const { data, loading, error } = useAssetFetch(
@@ -37,13 +44,23 @@ export default function ChartContainer() {
     return [];
   }, [data]);
 
-  if (loading) return <Loader />;
+  if (loading)
+    return (
+      <CenteredContent>
+        <Loader />
+      </CenteredContent>
+    );
 
-  if (error) return <ErrorText text={JSON.stringify(error)} />;
+  if (error)
+    return (
+      <CenteredContent>
+        <Text>Data not found for asset. Please try again using a valid name or symbol.</Text>
+      </CenteredContent>
+    );
 
   return (
-    <Box mb={8}>
-      <Chart data={parsedChartData} />
-    </Box>
+    <CenteredContent>
+      {parsedChartData.length ? <Chart data={parsedChartData} /> : <Text>Search for asset data</Text>}
+    </CenteredContent>
   );
 }

@@ -2,6 +2,8 @@ import { Box } from '@chakra-ui/react';
 import { ColorType, createChart, MouseEventParams } from 'lightweight-charts';
 import { useEffect, useRef } from 'react';
 
+export const CHART_HEIGHT = 400;
+
 function createToolTipElement() {
   const toolTip = document.createElement('div');
   toolTip.style.width = '180px';
@@ -75,7 +77,7 @@ export function Chart({ data }: { data: ChartData[] }) {
         background: { type: ColorType.Solid, color: bgColor },
         textColor,
       },
-      height: 400,
+      height: CHART_HEIGHT,
     });
 
     chart.applyOptions(chartOptions);

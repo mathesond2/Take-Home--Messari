@@ -30,6 +30,7 @@ const fetchDataReducer = (state: FetchState, action: FetchAction): FetchState =>
       return {
         ...state,
         loading: true,
+        error: false,
       };
     case 'success':
       return {
