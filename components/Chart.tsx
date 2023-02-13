@@ -1,14 +1,15 @@
-import { Box } from '@chakra-ui/react';
-import { useEffect, useRef, useMemo } from 'react';
-import { createChart, ColorType, MouseEventParams } from 'lightweight-charts';
+import { roundToTwoDecimals } from '@/util/metrics';
 import { createAssetTimeSeriesURL, getCurrentDate, parseTimeSeriesParamsAsString } from '@/util/timeSeries';
 import { useAssetFetch } from '@/util/useAssetFetch';
+import { Box } from '@chakra-ui/react';
+import { ColorType, createChart, MouseEventParams } from 'lightweight-charts';
+import { useEffect, useMemo, useRef } from 'react';
 import ErrorText from './ErrorText';
 import Loader from './Loader';
 
 function createToolTipElement() {
   const toolTip = document.createElement('div');
-  toolTip.style.width = '96px';
+  toolTip.style.width = '180px';
   toolTip.style.height = '80px';
   toolTip.style.position = 'absolute';
   toolTip.style.display = 'none';
@@ -30,12 +31,8 @@ function createToolTipElement() {
 }
 
 type ChartData = {
-  time: number;
-  open: number;
-  high: number;
-  low: number;
+  time: string;
   value: number;
-  volume: number;
 };
 
 export const ChartComponent = ({ data }: { data: ChartData[] }) => {
@@ -73,12 +70,23 @@ export const ChartComponent = ({ data }: { data: ChartData[] }) => {
           visible: false,
         },
       },
+      handleScroll: {
+        mouseWheel: false,
+        pressedMouseMove: false,
+        horzTouchDrag: false,
+        vertTouchDrag: false,
+      },
+      handleScale: {
+        axisPressedMouseMove: false,
+        mouseWheel: false,
+        pinch: false,
+      },
     });
 
     const newSeries = chart.addAreaSeries({ lineColor, topColor: areaTopColor, bottomColor: areaBottomColor });
     newSeries.setData(data);
 
-    const toolTipWidth = 80;
+    const toolTipWidth = 180;
     const toolTipHeight = 80;
     const toolTipMargin = 0;
 
@@ -98,12 +106,12 @@ export const ChartComponent = ({ data }: { data: ChartData[] }) => {
         toolTip.style.display = 'none';
       } else {
         toolTip.style.display = 'block';
+
         const data = seriesData.entries().next().value;
         const price = data[1].value;
         toolTip.innerHTML = `
-          <div style="color: ${'#2962FF'}">Apple Inc.</div>
-          <div style="font-size: 24px; margin: 4px 0px; color: ${'black'}">${price}</div>
-          <div style="color: ${'black'}">hi</div>
+          <div style="color: ${'black'}">${time}</div>
+          <div style="font-size: 16px; margin: 4px 0px; color: ${'black'}">Close: $${price}</div>
         `;
 
         const coordinate = newSeries.priceToCoordinate(price);
@@ -142,28 +150,15 @@ export const ChartComponent = ({ data }: { data: ChartData[] }) => {
   return <Box ref={chartContainerRef} w="100%" />;
 };
 
-const initialData = [
-  { time: '2018-12-22', value: 32.51 },
-  { time: '2018-12-23', value: 31.11 },
-  { time: '2018-12-24', value: 27.02 },
-  { time: '2018-12-25', value: 27.32 },
-  { time: '2018-12-26', value: 25.17 },
-  { time: '2018-12-27', value: 28.89 },
-  { time: '2018-12-28', value: 25.46 },
-  { time: '2018-12-29', value: 23.92 },
-  { time: '2018-12-30', value: 22.68 },
-  { time: '2018-12-31', value: 22.67 },
-];
-
 function parseChartData(data: number[][]): ChartData[] {
-  return data.map((item) => ({
-    time: item[0],
-    open: item[1],
-    high: item[2],
-    low: item[3],
-    value: item[4], // 'close' metric
-    volume: item[5],
-  }));
+  return data.map((item) => {
+    const time = new Date(item[0]).toISOString().split('T')[0];
+    const value = roundToTwoDecimals(item[4]); // 'close' value
+    return {
+      time,
+      value,
+    };
+  });
 }
 
 export default function Chart() {
@@ -179,8 +174,6 @@ export default function Chart() {
     }),
   );
 
-  console.log('data', data);
-
   const parsedChartData = useMemo(() => {
     const values = data?.data?.values;
     if (values) {
@@ -188,8 +181,6 @@ export default function Chart() {
     }
     return [];
   }, [data]);
-
-  console.log('parsedChartData', parsedChartData);
 
   if (loading) return <Loader />;
 
