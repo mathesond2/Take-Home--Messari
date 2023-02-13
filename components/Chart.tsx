@@ -16,8 +16,6 @@ export default function Chart() {
     }),
   );
 
-  console.log('Chart', data, loading, error);
-
   if (loading) return <Loader />;
 
   if (error) return <ErrorText text={JSON.stringify(error)} />;
