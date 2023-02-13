@@ -1,11 +1,6 @@
-import { roundToTwoDecimals } from '@/util/metrics';
-import { createAssetTimeSeriesURL, getCurrentDate, parseTimeSeriesParamsAsString } from '@/util/timeSeries';
-import { useAssetFetch } from '@/util/useAssetFetch';
 import { Box } from '@chakra-ui/react';
 import { ColorType, createChart, MouseEventParams } from 'lightweight-charts';
-import { useEffect, useMemo, useRef } from 'react';
-import ErrorText from './ErrorText';
-import Loader from './Loader';
+import { useEffect, useRef } from 'react';
 
 function createToolTipElement() {
   const toolTip = document.createElement('div');
@@ -30,12 +25,42 @@ function createToolTipElement() {
   return toolTip;
 }
 
-type ChartData = {
+export type ChartData = {
   time: string;
   value: number;
 };
 
-export const ChartComponent = ({ data }: { data: ChartData[] }) => {
+const chartOptions = {
+  crosshair: {
+    vertLine: {
+      labelVisible: false,
+    },
+    horzLine: {
+      labelVisible: false,
+    },
+  },
+  grid: {
+    vertLines: {
+      visible: false,
+    },
+    horzLines: {
+      visible: false,
+    },
+  },
+  handleScroll: {
+    mouseWheel: false,
+    pressedMouseMove: false,
+    horzTouchDrag: false,
+    vertTouchDrag: false,
+  },
+  handleScale: {
+    axisPressedMouseMove: false,
+    mouseWheel: false,
+    pinch: false,
+  },
+};
+
+export function Chart({ data }: { data: ChartData[] }) {
   const chartContainerRef = useRef() as React.MutableRefObject<HTMLDivElement>;
 
   useEffect(() => {
@@ -53,36 +78,7 @@ export const ChartComponent = ({ data }: { data: ChartData[] }) => {
       height: 400,
     });
 
-    chart.applyOptions({
-      crosshair: {
-        vertLine: {
-          labelVisible: false,
-        },
-        horzLine: {
-          labelVisible: false,
-        },
-      },
-      grid: {
-        vertLines: {
-          visible: false,
-        },
-        horzLines: {
-          visible: false,
-        },
-      },
-      handleScroll: {
-        mouseWheel: false,
-        pressedMouseMove: false,
-        horzTouchDrag: false,
-        vertTouchDrag: false,
-      },
-      handleScale: {
-        axisPressedMouseMove: false,
-        mouseWheel: false,
-        pinch: false,
-      },
-    });
-
+    chart.applyOptions(chartOptions);
     const newSeries = chart.addAreaSeries({ lineColor, topColor: areaTopColor, bottomColor: areaBottomColor });
     newSeries.setData(data);
 
@@ -148,47 +144,4 @@ export const ChartComponent = ({ data }: { data: ChartData[] }) => {
   }, [data]);
 
   return <Box ref={chartContainerRef} w="100%" />;
-};
-
-function parseChartData(data: number[][]): ChartData[] {
-  return data.map((item) => {
-    const time = new Date(item[0]).toISOString().split('T')[0];
-    const value = roundToTwoDecimals(item[4]); // 'close' value
-    return {
-      time,
-      value,
-    };
-  });
-}
-
-export default function Chart() {
-  const { data, loading, error } = useAssetFetch(
-    createAssetTimeSeriesURL({
-      metricID: 'price',
-      params: parseTimeSeriesParamsAsString({
-        start: '1970-01-01',
-        end: getCurrentDate(),
-        interval: '1w',
-        order: 'ascending',
-      }),
-    }),
-  );
-
-  const parsedChartData = useMemo(() => {
-    const values = data?.data?.values;
-    if (values) {
-      return parseChartData(values);
-    }
-    return [];
-  }, [data]);
-
-  if (loading) return <Loader />;
-
-  if (error) return <ErrorText text={JSON.stringify(error)} />;
-
-  return (
-    <Box mb={8}>
-      <ChartComponent data={parsedChartData} />
-    </Box>
-  );
 }

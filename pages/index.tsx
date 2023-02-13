@@ -1,5 +1,5 @@
 import Banner from '@/components/Banner';
-import Chart from '@/components/Chart';
+import ChartContainer from '@/components/ChartContainer';
 import Metrics from '@/components/Metrics';
 import { useAssetFetch } from '@/util/useAssetFetch';
 import { Box } from '@chakra-ui/react';
@@ -35,7 +35,7 @@ export default function Home() {
     <main>
       <Banner name={name} symbol={symbol} price={market_data.price_usd} />
       <Box display="flex" flexDir="column" mt={10}>
-        <Chart />
+        <ChartContainer />
         <Metrics metricsData={metricsData} />
       </Box>
     </main>
