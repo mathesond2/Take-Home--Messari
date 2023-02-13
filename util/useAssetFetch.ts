@@ -6,7 +6,7 @@ type FetchAction = {
   readonly data?: any | null;
 };
 
-type FetchState = {
+export type FetchState = {
   error: boolean;
   loading: boolean;
   data: any | null;
